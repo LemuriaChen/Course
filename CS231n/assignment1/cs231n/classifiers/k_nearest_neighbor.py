@@ -65,13 +65,15 @@ class KNearestNeighbor(object):
     dists = np.zeros((num_test, num_train))
     for i in range(num_test):
       for j in range(num_train):
+        # dists[i][j] = np.sqrt(np.sum(np.square(X[i] - self.X_train[j])))
+        dists[i][j] = np.sqrt(np.sum((X[i] - self.X_train[j])**2))
         #####################################################################
         # TODO:                                                             #
         # Compute the l2 distance between the ith test point and the jth    #
         # training point, and store the result in dists[i, j]. You should   #
         # not use a loop over dimension.                                    #
         #####################################################################
-        pass
+        # pass
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################
@@ -88,12 +90,14 @@ class KNearestNeighbor(object):
     num_train = self.X_train.shape[0]
     dists = np.zeros((num_test, num_train))
     for i in range(num_test):
+      # dists[i] = np.sqrt(np.sum(np.square(self.X_train - X[i]), axis = 1))
+      dists[i] = np.sqrt(np.sum((self.X_train - X[i])**2, axis=1))
       #######################################################################
       # TODO:                                                               #
       # Compute the l2 distance between the ith test point and all training #
       # points, and store the result in dists[i, :].                        #
       #######################################################################
-      pass
+      # pass
       #######################################################################
       #                         END OF YOUR CODE                            #
       #######################################################################
@@ -121,7 +125,9 @@ class KNearestNeighbor(object):
     # HINT: Try to formulate the l2 distance using matrix multiplication    #
     #       and two broadcast sums.                                         #
     #########################################################################
-    pass
+    # pass
+    dists = np.sqrt(-2*np.dot(X, self.X_train.T) + np.sum(np.square(self.X_train), axis=1) +
+                    np.transpose([np.sum(np.square(X), axis=1)]))
     #########################################################################
     #                         END OF YOUR CODE                              #
     #########################################################################
@@ -146,6 +152,7 @@ class KNearestNeighbor(object):
       # A list of length k storing the labels of the k nearest neighbors to
       # the ith test point.
       closest_y = []
+      closest_y = self.y_train[dists[i].argsort()[:k]]
       #########################################################################
       # TODO:                                                                 #
       # Use the distance matrix to find the k nearest neighbors of the ith    #
@@ -153,7 +160,8 @@ class KNearestNeighbor(object):
       # neighbors. Store these labels in closest_y.                           #
       # Hint: Look up the function numpy.argsort.                             #
       #########################################################################
-      pass
+      
+      # pass
       #########################################################################
       # TODO:                                                                 #
       # Now that you have found the labels of the k nearest neighbors, you    #
@@ -161,7 +169,8 @@ class KNearestNeighbor(object):
       # Store this label in y_pred[i]. Break ties by choosing the smaller     #
       # label.                                                                #
       #########################################################################
-      pass
+      # pass
+      y_pred[i] = np.bincount(np.array(closest_y)).argmax()
       #########################################################################
       #                           END OF YOUR CODE                            # 
       #########################################################################
